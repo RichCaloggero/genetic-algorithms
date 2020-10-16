@@ -138,7 +138,8 @@ let parentIndex =         0;
 // Since numToKeep is even, we won't violate the loop 
 //   boundary by incrementing by 2
 for(let i=numToKeep; i < this.myPopulation.length - 1; i += 2) {
-const children = this.myPopulation[parentIndex].crossover(this.myPopulation[parentIndex + 1]);
+const parents = this.select2(parentIndex);
+const children = parents[0].crossover(parents[1]);
 this.myPopulation[i] = children[0];
 this.myPopulation[i+1] = children[1];
 parentIndex += 2;
@@ -173,48 +174,22 @@ if (Math.random() < this.nudgeRate) {
 this.myPopulation[i] = this.myPopulation[i].nudge(this.myMinGeneValue, this.myMaxGeneValue, this.myMaxNudgeAmount, this.nudgeMutationRate);
 } // if
 
-this.nudgeRate *= 0.99;
-this.myMaxNudgeAmount  *= 0.99;
+//this.nudgeRate *= 0.99;
+//this.myMaxNudgeAmount  *= 0.99;
 } // for
 
+this.nudgeRate *= 0.99;
+this.myMaxNudgeAmount  *= 0.99;
 this.sortPopulation();
 } // nudgePopulation
+
+select2 (index) {
+return [this.myPopulation[index], this.myPopulation[index+1]];
+} // select2
+
 } // class Population
 
 
-/// selection
-
-	var Optimize = {
-		maximize: (a, b) => a >= b,
-		minimize: (a, b) => a < b
-	}; // optimize
-
-	var select1 = {
-		tournament2: (pop) => {
-			const  n = pop.length;
-			const   o1 = pop[random2(0,n)];
-						const  o2 = pop[random2(0,n)];
-return this.optimize(o1.myFitness, o2.myFitness) ? o1 : o2;
-		}, // tournament2
-
-tournament3: (pop) => {
-			var n = pop.length;
-						const   o1 = pop[random2(0,n)];
-						const  o2 = pop[random2(0,n)];
-			const  o3 = pop[random2(0,n)];
-
-			let best = this.optimize(o1.myFitness, o2.myFitness) ? o1 : o2;
-			best = this.optimize(best.myFitness, o3.myFitness) ? best : o3;
-			return best;
-		}, // tournament3
-
-fittest: (pop) => pop[0],
-};
-
-	var Select2 = {
-		Tournament2: (pop) => [select1.tournament2(pop), select1.tournament2(pop)],
-		tournament3: (pop) => [select1.tournament3(pop), select1.tournament3(pop)],
-}; // select2
 
 export {Population as default};
 
